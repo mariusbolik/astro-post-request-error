@@ -1,6 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+
+let text;
+
+if (Astro?.request?.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    console.log('POST DATA', data);
+    text = data.get("text");
+    console.log('POST TEXT', text);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
 ---
 
 <Layout title="Welcome to Astro.">
@@ -35,31 +49,12 @@ import Card from '../components/Card.astro';
 		</svg>
 		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
 		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
+			POST Message: <strong>{ text }</strong>
 		</p>
-		<ul role="list" class="link-card-grid">
-			<Card
-				href="https://docs.astro.build/"
-				title="Documentation"
-				body="Learn how Astro works and explore the official API docs."
-			/>
-			<Card
-				href="https://astro.build/integrations/"
-				title="Integrations"
-				body="Supercharge your project with new frameworks and libraries."
-			/>
-			<Card
-				href="https://astro.build/themes/"
-				title="Themes"
-				body="Explore a galaxy of community-built starter themes."
-			/>
-			<Card
-				href="https://astro.build/chat/"
-				title="Community"
-				body="Come say hi to our amazing Discord community. ❤️"
-			/>
-		</ul>
+    <form method="POST">
+      <input type="text" name="text" required />
+      <button type="submit">Send</button>
+    </form>
 	</main>
 </Layout>
 
@@ -120,4 +115,52 @@ import Card from '../components/Card.astro';
 		gap: 2rem;
 		padding: 0;
 	}
+
+  /* Dark Mode Theme for Form */
+:root {
+  --background-color: #333; /* Dark background */
+  --text-color: #fff; /* Light text */
+  --accent-color: #4CAF50; /* Accent color for the button */
+  --input-background-color: #555; /* Slightly lighter input background */
+  --input-border-color: #777; /* Input border color */
+  --input-placeholder-color: #aaa; /* Placeholder text color */
+}
+
+form {
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--background-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+input[type="text"] {
+  width: 95%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: var(--input-background-color);
+  border: 1px solid var(--input-border-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+input::placeholder {
+  color: var(--input-placeholder-color);
+}
+
+button {
+  background-color: rgb(var(--accent-dark));
+  color: var(--text-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  opacity: 0.7;
+}
+
 </style>
